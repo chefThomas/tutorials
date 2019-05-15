@@ -1,0 +1,90 @@
+Source:
+https://daveceddia.com/implement-a-design-with-css// 
+
+Notes:
+1. SKETCH
+Very important to sketch layout first. Designing a layout item by item as you write HTML/CSS is best left to experts. CSS and HTML are not for sketching!
+
+2. BOX
+Draw boxes around main parts. For instance, in a tweet, image would be its own part, 
+a row of buttons would be a part,  and text would also be its own part. See tweet-highlighted.jpg 
+
+3. ROWS & COLUMNS
+After distinguishing parts, try to divide them into rows and columns in preparation for flexbox and grid systems. See tweet-first-level-layout-boxes.jpg
+
+4. WRITE (SEMANTIC) HTML
+Easy to fall into wrapping everything with div. This kills SEO and a11y. Don't do it. Even loosely related semantic tags 
+(e.g. <article> for a blog post </article>) are preferable to div. 
+
+5. MORE BOXES ON SKETCHED LAYOUT
+Before implementing flex/grid, may have to define higher-order groups that will serve as containers to set with flex or grid display rule. 
+See tweet-all-layout-boxes.jpg. 
+
+6. APPLY FLEXBOX
+Use flexbox because it's better-suited for small, simple layouts or those where orientation of
+elements is generally either column or row
+
+Parent element is article, so we set rule display: flex on it. 
+The two main sub-elements, image and content are now side-by-side in flexbox-display default row orientation.
+
+7. ADJUST VERTICAL ALIGNMENT
+align-items value default is stretch, which sets height of all flex items equal to tallest one. 
+This can skew images. Fix by setting align-items: flex-start on flex container. Items set their own 
+height with this rule.
+
+8. ADJUST CONTENT WIDTH
+Default is for content to take up as much as space as needed, but we want main content to 
+occupy entire width of container. 
+
+9. MARGINS
+A good general rule is to set margins on right and bottom of elements, because english flows L => R
+Set margin right on book image in rem units. Using rem means changing root font size will make sweeping changes. 
+
+10. SELECTOR REFRESHER
+Complex selector targeting nested elements
+
+To remove styling from all li nested in ul, use 
+CSS
+.actions li {
+    list-style: none;
+}
+
+HTML
+<ul class="actions">
+    <li><button>visit user</button></li>
+    <li><button>respond</button></li>
+    <li><button>like</button></li>
+</ul>
+
+
+Browser first 'sees' all li, then looks for element with actions class.
+
+
+11. HORIZONTAL SPACING of ITEMS IN FLEX CONTAINER
+Use flex container rule justify-content to adjust alignment of flex items along main axis (default row)
+Values: 
+    flex-start 
+    flex-end 
+    center
+    space-between
+    space-around
+    space-evenly
+
+I use this along with margin-right on action buttons to align them at bottom of card
+
+12. CHANGE FONT
+Font properties are inherited, so setting rules on the root element will propagate down to all elements
+nested within. 
+
+13. PSEUDOELEMENT
+Just for style points, add in a raised dot between title and star rating icons
+.rating-icons::before {
+    content: " \00b7";
+}
+
+14. ICON BUTTONS
+Replace text buttons with font awesome icons
+
+15. FINISHING TOUCHES
+    1. box-shadow, icon and font color, link styling
+-->

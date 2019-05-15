@@ -1,0 +1,80 @@
+a {
+    color: #4688f1;
+    text-decoration: none;
+}
+.notification {
+    display: flex;
+    padding: 10px;
+    align-items: flex-start;
+    max-width: 700px;;
+    border: 1px solid #ccc;
+    font-family: Arial, Helvetica, sans-serif;
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    color: #394b59;
+    font-size: 16px;
+}
+
+.book-cover {
+    margin-right: 1rem;
+}
+
+.book-title {
+    margin-right: 1rem;
+}
+
+.meta-content {
+    margin-top: 1rem;
+}
+.main-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-evenly; */
+    /* flex: 1; */
+}
+
+.rating-icons {
+    display: inline-block;
+}
+
+.rating-icons i{
+    color: rgb(224, 36, 94);
+    font-size: 0.95rem;
+}
+
+.notification-button i:hover{
+    cursor: pointer;
+}
+
+.user {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.review {
+    margin-bottom: 1rem;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.actions li {
+    list-style: none;
+    margin-right: 1rem;
+}
+
+.notification-button {
+    border: none;
+    background-color: white;
+}
+
+i {
+    font-size: 1.5rem;
+    color: #4688f1
+}
+
+
+
