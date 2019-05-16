@@ -11,7 +11,7 @@ a {
     font-family: Arial, Helvetica, sans-serif;
     box-shadow: 0 0 8px rgba(0,0,0,0.3);
     color: #394b59;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .book-cover {
@@ -29,8 +29,6 @@ a {
     position: relative;
     display: flex;
     flex-direction: column;
-    /* justify-content: space-evenly; */
-    /* flex: 1; */
 }
 
 .rating-icons {
@@ -38,7 +36,7 @@ a {
 }
 
 .rating-icons i{
-    color: rgb(224, 36, 94);
+    color: #FFD700			;
     font-size: 0.95rem;
 }
 
@@ -52,8 +50,8 @@ a {
     font-size: 1.25rem;
 }
 
-.review {
-    margin-bottom: 1rem;
+.review.link {
+    text-decoration: underline;
 }
 
 .actions {

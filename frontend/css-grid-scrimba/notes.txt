@@ -1,0 +1,187 @@
+01. FIRST GRID
+    Grids consist of two main elements: grid container and items, which
+    are elements inside the grid
+
+    On container element
+        a. set rule display: grid
+        b. define number and width of columns with grid-template-columns. Multiple ways/units to 
+        define rule:
+            1. pixels
+                example: 200px 400px 100px makes three cols of defined width
+            2. auto takes up remaining space.
+            3. fr (fractional unit) 2fr 1fr 1fr. Sum of fr is 4. 2fr gets 50%, 1 takes up 25%.
+            4. Can combine. 2fr 400px 1fr. After 400px taken, 2fr gets 2/3 of remaining space and 1fr gets 1/3
+        c. define number and *height* (instead of width) of rows in similar fashion as cols. auto for row will 
+            expand to contain content. 
+
+        // example
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-auto-rows: 20px 300px 15px;            
+        }
+
+02. FR UNITS AND REPEAT
+
+    // fr unit
+    Rule-set creates responsive grid. Width of middle col shrinks and
+    expands as browser is resized. 
+
+    .container {
+        display: grid;
+        grid-template-columns: 100px auto 100px;
+        grid-template-rows: 50px 50px;
+        grid-gap: 3px;
+    }
+
+    But suppose we want width of all cols to change with browser while maintaining
+    width ratio between them. This is what the fr unit allows us to do.
+
+    Rule-set below create middle col double those on end which are equal to each other.
+    Width of all cols shrinks and grows as browser changes size, while maintaining width ratio
+    between cols.
+
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+        grid-template-rows: 50px 50px;
+        grid-gap: 3px;
+    }
+
+    // REPEAT
+    Instead of rewriting values, use repeat. Rule-set below creates 4 cols with 
+    responsive width, alternating 1 to 2 units wide
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr 2 fr);
+        grid-template-rows: 50px 50px;
+    }
+
+    // a simpler example where we create 6 cols maintaining
+    equal width
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(2, 50px);
+    }
+
+    // SHORTHAND METHOD FOR DEFINING COLS AND ROWS
+        // last example rewritten using shorthand. 
+    .container {
+        display: grid;
+        grid-template: repeat(2, 50px) / repeat(2, 1fr 2 fr);
+    }
+
+
+
+03. POSITIONING ITEMS GRID-COLUMN-START
+
+    Given site with elements below, we would like header to span top,
+    menu and content to split middle and footer to span bottom. This will 
+    require three rows.
+    <html>
+        <head>
+            <link rel="stylesheet" href="index.css">
+            <link rel="stylesheet" href="basic.css">
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">HEADER</div>
+                <div class="menu">MENU</div>
+                <div class="content">CONTENT</div>
+                <div class="footer">FOOTER</div>
+            </div>
+        </body>
+    </html>
+
+    Positioning is set on individual items with 
+    grid-column-start: <grid line>;
+    grid-column-end: <grid line>;
+
+    // shorthand
+
+    grid-column: <grid line> / <grid line> 
+
+    // to make header element span across both columns,
+    .header {
+        grid-column: 1 / 3;
+    }
+
+    Note: numbers are column grid lines which
+    line outide of cols and divide them. There is always cols+1 lines
+
+
+    // SPAN specifies number columns spanned. Rule specifies begin 
+    at line 1 then span 2 cols. 
+    .header {
+        grid-column: 1 / span 2;
+    }
+
+    //  COOL TRICK ALERT
+    // -1 is last grid line. If you want to always span
+    entire grid when col num increases, can use:
+
+    .item {
+        grid-column: 1 / -1;
+    } 
+
+    From initial layout of header/footer spanning total width
+    with menu and content in middle row of appropriate widths
+    A good exercise is to move sidebar menu
+    across to other side and make it span top to bottom
+
+
+04. TEMPLATE AREAS
+  A very handy feature of grid that lets you change layouts
+  very easily is template-areas. It is ideal for creating
+  prototypes very quickly. 
+
+  Initial layout is same as last, with exception of two things:
+    1. second row has auto height, so it auto fills all remaining
+    space between hard coded top and bottom rows which are 40px high.
+    2. container height is set to 100% which fills entire height
+    of browser window, except for margins/padding
+
+    // GRID-TEMPLATE-AREAS
+    grid-template-area rule specifies layout using rows of 
+    strings where each space separated char maps to
+    a row, col coordinate on the grid. The number of rows of strings
+    must be equal to the number of rows in the grid and the 
+    number of chars in each string must equal the number of cols.
+
+    Then, map item to template-area with grid-area: char
+
+    Easiest to understand with visual example (below).
+
+
+    .container {
+        height: 100%;
+        display: grid;
+        grid-gap: 3px;
+        grid-template-columns: repeat(12, 1fr);
+        grid-template-rows: 40px auto 40px;
+        grid-template-areas:
+            "h h h h h h h h h h h h"
+            "m c c c c c c c c c c c"
+            "f f f f f f f f f f f f";
+    }
+
+    .header {
+        grid-area: h;
+    }
+
+    .menu {
+        grid-area: m;
+    }
+
+    .content {
+        grid-area: c;
+    }
+
+    .footer {
+        grid-area: f;
+    }
+
+    Changing layout is then trivial. 
