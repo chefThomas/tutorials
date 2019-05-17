@@ -1,16 +1,17 @@
+TUTORIAL SOURCE: https://scrimba.com/g/gR8PTE
 01. FIRST GRID
     Grids consist of two main elements: grid container and items, which
     are elements inside the grid
 
     On container element
-        a. set rule display: grid
+        a. set CSS rule display: grid
         b. define number and width of columns with grid-template-columns. Multiple ways/units to 
         define rule:
             1. pixels
                 example: 200px 400px 100px makes three cols of defined width
             2. auto takes up remaining space.
             3. fr (fractional unit) 2fr 1fr 1fr. Sum of fr is 4. 2fr gets 50%, 1 takes up 25%.
-            4. Can combine. 2fr 400px 1fr. After 400px taken, 2fr gets 2/3 of remaining space and 1fr gets 1/3
+            4. Can combine units. 2fr 400px 1fr. After 400px taken, 2fr gets 2/3 of remaining space and 1fr gets 1/3
         c. define number and *height* (instead of width) of rows in similar fashion as cols. auto for row will 
             expand to contain content. 
 
@@ -58,8 +59,7 @@
         grid-template-rows: 50px 50px;
     }
 
-    // a simpler example where we create 6 cols maintaining
-    equal width
+    // a simpler example with 6 cols of equal width
 
     .container {
         display: grid;
@@ -67,11 +67,10 @@
         grid-template-rows: repeat(2, 50px);
     }
 
-    // SHORTHAND METHOD FOR DEFINING COLS AND ROWS
-        // last example rewritten using shorthand. 
+    // SHORTHAND
     .container {
         display: grid;
-        grid-template: repeat(2, 50px) / repeat(2, 1fr 2 fr);
+        grid-template: repeat(2, 50px) / repeat(6, 1fr);
     }
 
 
@@ -81,6 +80,10 @@
     Given site with elements below, we would like header to span top,
     menu and content to split middle and footer to span bottom. This will 
     require three rows.
+
+    Note: numbers are column grid lines which
+    line outide of cols and divide them. There is always cols+1 lines
+
     <html>
         <head>
             <link rel="stylesheet" href="index.css">
@@ -100,18 +103,13 @@
     grid-column-start: <grid line>;
     grid-column-end: <grid line>;
 
-    // shorthand
-
+    // SHORTHAND
     grid-column: <grid line> / <grid line> 
 
     // to make header element span across both columns,
     .header {
         grid-column: 1 / 3;
     }
-
-    Note: numbers are column grid lines which
-    line outide of cols and divide them. There is always cols+1 lines
-
 
     // SPAN specifies number columns spanned. Rule specifies begin 
     at line 1 then span 2 cols. 
@@ -184,4 +182,65 @@
         grid-area: f;
     }
 
-    Changing layout is then trivial. 
+    Changing layout is then trivial
+
+05. AUTO-FIT AND MINMAX **subtitle: how to avoid media queries**
+
+    rule-set below is non-responsive. We can use fr units instead of px to make it responsive,
+    but sometimes content becomes too compact or spread out. For these cases, we can use auto-fit
+    and minmax to constrain column width and make number of cols responsive to browser width. 
+
+    // rigid column number and width
+
+    .container {
+        display: grid;
+        grid-gap: 5px;
+        grid-template-columns: repeat(6, 100px);
+        grid-template-rows: repeat(2, 100px);
+    }
+
+    // col number responsive to browser width with auto-fit
+
+    .container {
+        display: grid;
+        grid-gap: 5px;
+        grid-template-columns: repeat(auto-fit, 100px);
+        grid-template-rows: repeat(2, 100px);
+    }
+
+    As soon as 100px are available, a new column pops into place. This can leave awkward-looking gaps, though, but we can avoid
+    that with minmax (see below).
+
+    // adding minmax makes col width responsive and prevents content from becoming too compact
+    or spread out.  
+    
+        .container {
+            display: grid;
+            grid-gap: 5px;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-template-rows: repeat(2, 100px);
+        }
+
+    Can use repeat, auto-fit and minmax together to create a very nice responsive UI.
+
+    
+06. IMPLICIT ROW HEIGHT w/ grid-auto-row
+    Similar to how auto-fit defines width of columns that pop into existence from widening browser window,
+    we can implicitly define the height of rows with grid-auto-row
+
+    // Row height for rows >= 3rd minimum to accomodate content
+    .container {
+        display: grid;
+        grid-gap: 5px;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        grid-template-rows: repeat(2, 100px);
+    }
+
+    // Implicitly set row height 
+
+    .container {
+        display: grid;
+        grid-gap: 5px;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        grid-auto-rows: 100px;
+    }
