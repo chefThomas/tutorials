@@ -1,0 +1,42 @@
+.grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    /* grid-auto-rows: auto; */
+    height: 205px;
+    grid-template-areas: 
+        "i m"
+        "i r"
+        "i a";
+}
+
+.book-cover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-area: i; 
+}
+
+.meta-content {
+    grid-area: m;
+    display: flex;
+}
+
+.review-blurb {
+    grid-area: r;
+}
+
+.actions {
+    grid-area: a;
+    display: flex;
+    justify-content: flex-end;
+}
+
+ul {
+    display: flex;
+
+}
+
+li {
+    list-style: none;
+    margin-right: 1rem;
+}

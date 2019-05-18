@@ -40,6 +40,11 @@ a {
     font-size: 0.95rem;
 }
 
+.rating-icons i:hover{
+    cursor: pointer;
+}
+
+
 .notification-button i:hover{
     cursor: pointer;
 }

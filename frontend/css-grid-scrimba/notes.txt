@@ -67,7 +67,7 @@ TUTORIAL SOURCE: https://scrimba.com/g/gR8PTE
         grid-template-rows: repeat(2, 50px);
     }
 
-    // SHORTHAND
+    // SHORTHAND (row/col)
     .container {
         display: grid;
         grid-template: repeat(2, 50px) / repeat(6, 1fr);
@@ -75,7 +75,7 @@ TUTORIAL SOURCE: https://scrimba.com/g/gR8PTE
 
 
 
-03. POSITIONING ITEMS GRID-COLUMN-START
+03. POSITIONING ITEMS GRID-COLUMN/ROW-START 
 
     Given site with elements below, we would like header to span top,
     menu and content to split middle and footer to span bottom. This will 
@@ -132,9 +132,8 @@ TUTORIAL SOURCE: https://scrimba.com/g/gR8PTE
 
 
 04. TEMPLATE AREAS
-  A very handy feature of grid that lets you change layouts
-  very easily is template-areas. It is ideal for creating
-  prototypes very quickly. 
+  A handy feature of grid that lets you change layouts
+  very easily is template-areas. It is ideal for quick prototyping.
 
   Initial layout is same as last, with exception of two things:
     1. second row has auto height, so it auto fills all remaining
