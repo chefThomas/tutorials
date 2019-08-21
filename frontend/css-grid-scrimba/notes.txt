@@ -220,7 +220,7 @@ TUTORIAL SOURCE: https://scrimba.com/g/gR8PTE
             grid-template-rows: repeat(2, 100px);
         }
 
-    Can use repeat, auto-fit and minmax together to create a very nice responsive UI.
+    Can use repeat, auto-fit and minmax together to create a very nice responsive UI.r
 
     
 06. IMPLICIT ROW HEIGHT w/ grid-auto-row

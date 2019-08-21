@@ -1,0 +1,11 @@
+.Note {
+  list-style: none;
+}
+
+.button {
+  margin-right: 2rem;
+}
+
+.red-button {
+  background-color: red;
+}
