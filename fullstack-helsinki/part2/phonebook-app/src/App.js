@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Form from "./components/Form";
 import Item from "./components/Item";
 import Filter from "./components/Filter";
+import Message from "./components/Message";
 
 import {
   loadPersons,
@@ -15,6 +16,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [display, setDisplay] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleControlName = e => setNewName(e.target.value);
   const handleControlNumber = e => setNewNumber(e.target.value);
@@ -44,24 +46,22 @@ const App = () => {
           person => person.name.toLowerCase() === newName.toLowerCase()
         );
 
-        console.log("find person", findPerson);
-
         const updatedPerson = { ...findPerson, number: newNumber };
 
-        console.log("updated person", updatedPerson.id);
-
-        updateNumber(updatedPerson.id, updatedPerson)
-          .then(res => console.log(res))
+        updateNumber(findPerson.id, updatedPerson)
+          .then(res => {
+            setPersons(
+              persons.map(person =>
+                person.id !== updatedPerson.id ? person : res.data
+              )
+            );
+            // display update message
+            displayMessage("update");
+            // reset fields
+            setNewName("");
+            setNewNumber("");
+          })
           .catch(err => console.log(err));
-
-        setPersons(
-          persons.map(person =>
-            person.id !== updatedPerson.id ? person : updatedPerson
-          )
-        );
-
-        setNewName("");
-        setNewNumber("");
       }
     } else {
       // new entry
@@ -79,14 +79,20 @@ const App = () => {
     console.log("delete ", id);
 
     if (window.confirm("Are you sure you want to do that?")) {
-      deletePerson(id).then(res => {
-        console.log(res);
-        console.log(res.data);
-        const removeDeleted = persons.filter(person => {
-          return person.id !== +id;
+      deletePerson(id)
+        .then(res => {
+          console.log(res);
+          console.log(res.data);
+          setPersons(
+            persons.filter(person => {
+              return person.id !== +id;
+            })
+          );
+          displayMessage("delete");
+        })
+        .catch(err => {
+          setMessage("already deleted");
         });
-        setPersons(removeDeleted);
-      });
     }
   };
 
@@ -109,9 +115,30 @@ const App = () => {
     setDisplay(filteredPersons);
   };
 
+  const displayMessage = type => {
+    switch (type) {
+      case "update":
+        setMessage("entry updated");
+        break;
+      case "delete":
+        setMessage("entry deleted");
+        break;
+      case "already deleted":
+        setMessage("this entry has already been deleted");
+        break;
+      default:
+        setMessage("");
+    }
+
+    setTimeout(() => {
+      setMessage("");
+    }, 1500);
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <div style={{ height: "1rem", marginBottom: "0.5rem" }} />
       <Form
         onSubmit={handleSubmit}
         onNameChange={handleControlName}
@@ -121,7 +148,7 @@ const App = () => {
       />
       <h3>Filter</h3>
       <Filter filter={generateFiltered} />
-      <h2>Numbers</h2>
+      <h2>Numbers</h2> {message.length > 1 ? <Message message={message} /> : ""}
       <ul>{display ? generateList(display) : generateList(persons)}</ul>
     </div>
   );
