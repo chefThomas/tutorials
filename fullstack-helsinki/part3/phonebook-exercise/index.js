@@ -2,21 +2,15 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
-
+const cors = require("cors");
+const uuid = require("short-uuid");
 let data = require("./data/fake-db");
 
-// const requestLogger = (req, res, next) => {
-//   console.log("Method: ", req.method);
-//   console.log("Path: ", req.path);
-//   console.log("Body: ", req.body);
-//   console.log("----");
-//   next();
-// };
-
-// middleware
 morgan.token("body", req => JSON.stringify(req.body));
 
 // app.use(requestLogger);
+app.use(express.static("build"));
+app.use(cors());
 app.use(bodyParser.json());
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
@@ -29,7 +23,7 @@ app.get("/persons", (req, res) => {
 
 // generate ID
 const generateId = () => {
-  return Math.max(...data.persons.map(person => person.id)) + 1;
+  return uuid.generate();
 };
 
 // return HTML displaying number of entries in phonebook and time of retrieval
@@ -47,8 +41,7 @@ app.get("/persons/:id", (req, res) => {
   // find person
 
   //find person
-  const person = data.persons.find(person => person.id === +paramId);
-  console.log(person);
+  const person = data.persons.find(person => person.id === paramId);
   if (!person) {
     res.status(404).send("resource not found");
   } else {
@@ -57,7 +50,7 @@ app.get("/persons/:id", (req, res) => {
 });
 
 app.delete("/persons/:id", (req, res) => {
-  const paramId = +req.params.id;
+  const paramId = req.params.id;
   const person = data.persons.find(person => person.id === paramId);
   if (!person) {
     res.status(404).send("resource not found");
@@ -69,7 +62,6 @@ app.delete("/persons/:id", (req, res) => {
 
 app.post("/persons", (req, res) => {
   const newPerson = req.body;
-
   // check for existing name
   const query = data.persons.find(person => person.name == newPerson.name);
 
@@ -80,12 +72,26 @@ app.post("/persons", (req, res) => {
       res.status(400).send("bad request. missing information");
     } else {
       newPerson.id = generateId();
-      data.persons = data.persons.concat(newPerson);
-      res.status(202).json(data);
+      data = { ...data, persons: data.persons.concat(newPerson) };
+      console.log(data);
+      return res.status(202).json(newPerson);
     }
   }
-  // res.status(400).send("this person is already in the phonebook");
-  // return;
+});
+
+app.put("/persons/:id", (req, res) => {
+  const queryId = req.params.id;
+  const person = data.persons.find(person => person.id === queryId);
+  // gen updated person
+  const updatedPerson = { ...person, number: req.body.number };
+
+  // update db
+  const updatedPersons = data.persons.map(person =>
+    person.id !== queryId ? person : updatedPerson
+  );
+  data = { ...data, persons: updatedPersons };
+  // return updated obj to client
+  res.status(200).send(updatedPerson);
 });
 
 const unkEndpoint = (req, res, next) => {
@@ -94,5 +100,5 @@ const unkEndpoint = (req, res, next) => {
 
 app.use(unkEndpoint);
 
-PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));

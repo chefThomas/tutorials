@@ -24,8 +24,9 @@ const App = () => {
   useEffect(() => {
     loadPersons()
       .then(res => {
-        console.log(res.data);
-        setPersons(res.data);
+        const { persons } = res.data;
+        console.log(persons);
+        setPersons(persons);
       })
       .catch(err => console.log("error", err));
   }, []);
@@ -33,42 +34,39 @@ const App = () => {
   const handleSubmit = e => {
     e.preventDefault();
 
+    if (newName.length === 0 || newNumber.length === 0) {
+      displayMessage("incomplete");
+      return;
+    }
     // handle existing name case
+    const person = persons.find(person => person.name === newName);
     if (
-      persons.some(
-        person => person.name.toLowerCase() === newName.toLowerCase()
-      )
+      person &&
+      window.confirm(`${newName} is already in the phonebook. Update number?`)
     ) {
-      if (
-        window.confirm(`${newName} is already in the phonebook. Update number?`)
-      ) {
-        const findPerson = persons.find(
-          person => person.name.toLowerCase() === newName.toLowerCase()
-        );
-
-        const updatedPerson = { ...findPerson, number: newNumber };
-
-        updateNumber(findPerson.id, updatedPerson)
-          .then(res => {
-            setPersons(
-              persons.map(person =>
-                person.id !== updatedPerson.id ? person : res.data
-              )
-            );
-            // display update message
-            displayMessage("update");
-            // reset fields
-            setNewName("");
-            setNewNumber("");
-          })
-          .catch(err => console.log(err));
-      }
+      const updatedPerson = { ...person, number: newNumber };
+      console.log("updated person obj: ", updatedPerson);
+      updateNumber(person.id, updatedPerson)
+        .then(res => {
+          console.log("in update numb", res.data);
+          setPersons(
+            persons.map(person =>
+              person.id !== updatedPerson.id ? person : res.data
+            )
+          );
+          displayMessage("update");
+          //reset form
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch(err => console.log("updated person catch: ", err));
+      // handle new name entry case
     } else {
-      // new entry
       const newPerson = { name: newName, number: newNumber };
       postNewPerson(newPerson).then(res => {
-        console.log(res.data);
+        console.log("res.data in postNewPerson: ", res.data);
         setPersons(persons.concat(res.data));
+        console.log("persons state in postNewPerson: ", persons);
         setNewName("");
         setNewNumber("");
       });
@@ -83,15 +81,12 @@ const App = () => {
         .then(res => {
           console.log(res);
           console.log(res.data);
-          setPersons(
-            persons.filter(person => {
-              return person.id !== +id;
-            })
-          );
+          setPersons(persons.filter(person => person.id !== id));
           displayMessage("delete");
         })
         .catch(err => {
-          setMessage("already deleted");
+          console.log(err);
+          displayMessage("already deleted");
         });
     }
   };
@@ -124,7 +119,12 @@ const App = () => {
         setMessage("entry deleted");
         break;
       case "already deleted":
-        setMessage("this entry has already been deleted");
+        setMessage(
+          "this entry has already been deleted. refresh page to update"
+        );
+        break;
+      case "incomplete":
+        setMessage("You must enter both name and number");
         break;
       default:
         setMessage("");
