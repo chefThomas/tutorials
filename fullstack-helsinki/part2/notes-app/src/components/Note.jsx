@@ -16,7 +16,7 @@ const Note = ({ content, important, toggleImportant, id, removeNote }) => {
   };
 
   return (
-    <li className="Note" key={id} id={id} style={important ? styles : null}>
+    <li className="Note" id={id} key={id} style={important ? styles : null}>
       <button
         className={important ? "red-button" : "button"}
         onClick={handleToggle}

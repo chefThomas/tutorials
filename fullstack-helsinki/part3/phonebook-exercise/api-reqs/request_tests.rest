@@ -1,0 +1,26 @@
+GET http://localhost:3001/persons
+
+###
+GET http://localhost:3001/persons/5d742b83cb782031e591f420
+###
+GET http://localhost:3001/info
+
+###
+POST http://localhost:3001/persons HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "to",
+    "number": "12345678"
+}
+###
+
+DELETE  http://localhost:3001/persons/5d745bed245c6252f43a0c2a HTTP/1.1
+###
+
+PUT http://localhost:3001/persons/5d7165e933c8104cd1b6f431
+Content-Type: application/json
+
+{
+    "number": " new number"
+}

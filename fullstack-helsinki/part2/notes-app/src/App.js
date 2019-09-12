@@ -34,37 +34,38 @@ const App = props => {
     };
 
     // ad to db
-    postNew(newNote).then(res => {
-      console.log("submit res.data: ", res.data);
-      setNotes(notes.concat(res.data));
-    });
+    postNew(newNote)
+      .then(res => {
+        console.log("submit res.data: ", res.data);
+        setNotes(notes.concat(res.data));
+      })
+      .catch(err => console.log("error posting new note: ", err));
   };
 
   const showImportant = () => {
-    // only important notes displayed showAll is false. toggled by button
+    // only important notes displayed showAll is false
     setShowAll(!showAll);
   };
 
   const toggleImportant = id => {
     console.log("id in toggle: ", id);
-    // find note by id
-    const note = notes.find(note => note.id === +id);
-    // create note with mod importance
-    console.log("og note", note);
-    const modNote = { ...note, important: !note.important };
+    const note = notes.find(note => note.id === id);
+    const modNote = { important: !note.important };
     toggle(id, modNote)
       .then(res => {
         console.log("res data", res.data);
-        setNotes(notes.map(note => (note.id === +id ? res.data : note)));
+        setNotes(notes.map(note => (note.id === id ? res.data : note)));
       })
       .catch(err => console.log(err));
   };
 
   const handleRemove = id => {
-    // delete from db
-    removeNote(id).then(res => {
-      setNotes(notes.filter(note => note.id !== id));
-    });
+    console.log(id);
+    removeNote(id)
+      .then(res => {
+        setNotes(notes.filter(note => note.id !== id));
+      })
+      .catch(err => console.log("error message ", err));
     // remove frmo state (map)
   };
 
@@ -75,6 +76,7 @@ const App = props => {
         important={important}
         toggleImportant={toggleImportant}
         id={id}
+        key={id}
         removeNote={handleRemove}
       />
     ));

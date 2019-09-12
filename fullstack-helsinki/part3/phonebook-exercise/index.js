@@ -1,10 +1,11 @@
+require("dotenv").config();
+const Person = require("./models/mongo");
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
-const uuid = require("short-uuid");
-let data = require("./data/fake-db");
+const { validationErrorHandler } = require("./middleware/errorHandling");
 
 morgan.token("body", req => JSON.stringify(req.body));
 
@@ -16,88 +17,88 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
 // return all
-app.get("/persons", (req, res) => {
-  res.json(data);
-  //   res.json(persons);
+app.get("/persons", (req, res, next) => {
+  Person.find({})
+    .then(people => {
+      console.log(people);
+      res.json(people.map(person => person.toJSON()));
+    })
+    .catch(err => next(err));
 });
 
-// generate ID
-const generateId = () => {
-  return uuid.generate();
-};
-
 // return HTML displaying number of entries in phonebook and time of retrieval
-app.get("/info", (req, res) => {
-  const personsCount = data.data.persons.length;
+app.get("/info", (req, res, next) => {
   const date = new Date();
-  res.send(
-    `<p>Phonebook has info for ${personsCount} people</p><p>${date}</p>`
-  );
+
+  Person.find({})
+    .then(people => {
+      console.log(
+        `<p>Phonebook has info for ${people.length} people</p><p>${date}</p>`
+      );
+    })
+    .catch(err => next(err));
 });
 
 // return single person
 app.get("/persons/:id", (req, res) => {
-  const paramId = req.params.id;
   // find person
-
-  //find person
-  const person = data.persons.find(person => person.id === paramId);
-  if (!person) {
-    res.status(404).send("resource not found");
-  } else {
-    res.json(person);
-  }
+  Person.findById(req.params.id)
+    .then(person => {
+      if (person) {
+        res.json(person.toJSON());
+      } else {
+        res.status(404).json({ error: "person not found" });
+      }
+    })
+    .catch(err => next(err));
 });
 
-app.delete("/persons/:id", (req, res) => {
-  const paramId = req.params.id;
-  const person = data.persons.find(person => person.id === paramId);
-  if (!person) {
-    res.status(404).send("resource not found");
-  } else {
-    data.persons = data.persons.filter(person => person.id !== paramId);
-    res.status(202).send("resource deleted");
-  }
+app.delete("/persons/:id", (req, res, next) => {
+  Person.findByIdAndRemove(req.params.id)
+    .then(person => {
+      if (!person) {
+        res.status(204).end();
+      } else {
+        console.log("in remove then ", person);
+        res.json(person.toJSON());
+      }
+    })
+    .catch(err => next(err));
 });
 
-app.post("/persons", (req, res) => {
+app.post("/persons", (req, res, next) => {
   const newPerson = req.body;
   // check for existing name
-  const query = data.persons.find(person => person.name == newPerson.name);
+  console.log("in post", newPerson);
 
-  if (query) {
-    return res.status(400).send("this person already in book");
-  } else {
-    if (req.body.name.length === 0 || req.body.number === 0) {
-      res.status(400).send("bad request. missing information");
-    } else {
-      newPerson.id = generateId();
-      data = { ...data, persons: data.persons.concat(newPerson) };
-      console.log(data);
-      return res.status(202).json(newPerson);
-    }
-  }
+  const person = new Person({
+    name: req.body.name,
+    number: req.body.number
+  });
+
+  person
+    .save()
+    .then(savedPerson => res.json(savedPerson.toJSON()))
+    .catch(err => next(err));
 });
 
-app.put("/persons/:id", (req, res) => {
-  const queryId = req.params.id;
-  const person = data.persons.find(person => person.id === queryId);
-  // gen updated person
-  const updatedPerson = { ...person, number: req.body.number };
-
-  // update db
-  const updatedPersons = data.persons.map(person =>
-    person.id !== queryId ? person : updatedPerson
-  );
-  data = { ...data, persons: updatedPersons };
-  // return updated obj to client
-  res.status(200).send(updatedPerson);
+app.put("/persons/:id", (req, res, next) => {
+  Person.findByIdAndUpdate(
+    req.params.id,
+    { number: req.body.number },
+    { new: true }
+  )
+    .then(person => {
+      res.json(person.toJSON());
+      Mongoose;
+    })
+    .catch(err => next(err));
 });
 
 const unkEndpoint = (req, res, next) => {
   res.status(404).send({ error: "invalid path" });
 };
-
+app.use(validationErrorHandler);
 app.use(unkEndpoint);
 
 const PORT = process.env.PORT || 3001;

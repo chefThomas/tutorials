@@ -24,9 +24,9 @@ const App = () => {
   useEffect(() => {
     loadPersons()
       .then(res => {
-        const { persons } = res.data;
-        console.log(persons);
-        setPersons(persons);
+        const { data } = res;
+        console.log(data);
+        setPersons(data);
       })
       .catch(err => console.log("error", err));
   }, []);
@@ -62,25 +62,29 @@ const App = () => {
         .catch(err => console.log("updated person catch: ", err));
       // handle new name entry case
     } else {
+      console.log("made it to else in post");
       const newPerson = { name: newName, number: newNumber };
-      postNewPerson(newPerson).then(res => {
-        console.log("res.data in postNewPerson: ", res.data);
-        setPersons(persons.concat(res.data));
-        console.log("persons state in postNewPerson: ", persons);
-        setNewName("");
-        setNewNumber("");
-      });
+      postNewPerson(newPerson)
+        .then(res => {
+          console.log("res.data in postNewPerson: ", res.data);
+          setPersons(persons.concat(res.data));
+          console.log("persons state in postNewPerson: ", persons);
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch(err => {
+          const { message } = err.response.data;
+          if (message.includes("Person validation failed")) {
+            displayMessage("invalid entry", message);
+          }
+        });
     }
   };
 
   const handleDelete = id => {
-    console.log("delete ", id);
-
     if (window.confirm("Are you sure you want to do that?")) {
       deletePerson(id)
         .then(res => {
-          console.log(res);
-          console.log(res.data);
           setPersons(persons.filter(person => person.id !== id));
           displayMessage("delete");
         })
@@ -110,7 +114,7 @@ const App = () => {
     setDisplay(filteredPersons);
   };
 
-  const displayMessage = type => {
+  const displayMessage = (type, message) => {
     switch (type) {
       case "update":
         setMessage("entry updated");
@@ -126,13 +130,16 @@ const App = () => {
       case "incomplete":
         setMessage("You must enter both name and number");
         break;
+      case "invalid entry":
+        setMessage(message);
+        break;
       default:
         setMessage("");
     }
 
     setTimeout(() => {
       setMessage("");
-    }, 1500);
+    }, 3000);
   };
 
   return (
