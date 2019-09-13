@@ -12,15 +12,15 @@ const blogs = [
     likes: 900
   },
   {
-    title: "duck sauce",
+    title: "lucky 13 sauce",
     author: "mr chung",
     url: "http://goodstuff.com",
     likes: 900
   },
   {
-    title: "duck sauce",
-    author: "mr chung",
-    url: "http://goodstuff.com",
+    title: "seriously awesome",
+    author: "amanda coffee",
+    url: "http://girls.com",
     likes: 900
   }
 ];

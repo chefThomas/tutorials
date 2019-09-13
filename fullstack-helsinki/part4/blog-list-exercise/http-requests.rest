@@ -5,8 +5,10 @@ POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
 
 {
-    "title": "duck sauce",
+  "title": "duck sauce",
   "author": "mr chung",
   "url": "http://goodstuff.com",
   "likes": 900
 }
+###
+DELETE http://localhost:3003/api/blogs/5d79a6d6a897b71e204b394e
