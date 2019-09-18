@@ -5,10 +5,19 @@ POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
 
 {
-  "title": "duck sauce",
-  "author": "mr chung",
+  "title": "hockey pucks and you",
+  "author": "chad mcmuffin",
   "url": "http://goodstuff.com",
   "likes": 900
 }
 ###
-DELETE http://localhost:3003/api/blogs/5d79a6d6a897b71e204b394e
+DELETE http://localhost:3003/api/blogs/5d7be49cdf23890e0171d0e6
+
+
+###
+PUT http://localhost:3003/api/blogs/5d769f07ebd27f26c79b868c
+Content-Type:  application/json
+
+{
+  "likes": 333
+}

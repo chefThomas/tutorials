@@ -90,7 +90,6 @@ app.put("/persons/:id", (req, res, next) => {
   )
     .then(person => {
       res.json(person.toJSON());
-      Mongoose;
     })
     .catch(err => next(err));
 });

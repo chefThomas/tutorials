@@ -129,6 +129,21 @@ describe("delete post", () => {
   });
 });
 
+describe("update post", () => {
+  test("updates number of likes", async () => {
+    const { body } = await api.get("/api/blogs");
+    const { likes: oldLikes, id } = await body[0];
+
+    const updatedBlog = await api
+      .put(`/api/blogs/${id}`)
+      .send({ likes: oldLikes + 1 })
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    expect(updatedBlog.body.likes).toBe(oldLikes + 1);
+  });
+});
+
 // test initilization
 afterAll(() => {
   mongoose.connection.close();
