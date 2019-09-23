@@ -3,7 +3,8 @@ const supertest = require("supertest");
 const mongoose = require("mongoose");
 const api = supertest(app);
 const Blog = require("../models/blog");
-const { blogs } = require("./api_test_helper");
+const User = require("../models/user");
+const { blogs, users } = require("./api_test_helper");
 
 // prep db for testing
 beforeEach(async () => {
@@ -42,7 +43,7 @@ describe("test blog properties", () => {
   });
 });
 
-describe("post tests", () => {
+describe("post blog tests", () => {
   test("posts blog", async () => {
     // create new note
     const blog = {
@@ -141,6 +142,74 @@ describe("update post", () => {
       .expect("Content-Type", /application\/json/);
 
     expect(updatedBlog.body.likes).toBe(oldLikes + 1);
+  });
+});
+
+describe("post user when users exist in db", () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+
+    const allUsers = users.map(async user => {
+      const newUser = new User(user);
+      return await newUser.save();
+    });
+
+    return await Promise.all(allUsers);
+  });
+
+  test("checks test db ready", async () => {
+    const users = await User.find({});
+    expect(users.length).toBe(2);
+  });
+
+  test("401 error and user not saved to db when username ommitted", async () => {
+    const testUser = {
+      name: "george",
+      password: "passwerd"
+    };
+
+    await api
+      .post("/api/users")
+      .send(testUser)
+      .expect(401);
+
+    const users = await User.find({});
+    expect(users.length).toBe(2);
+  });
+
+  test("401 error and user not saved to db when password is less than 3 characters long", async () => {
+    const newUser = {
+      name: "popeye",
+      password: "sh",
+      username: "thesailorman"
+    };
+
+    await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(401);
+
+    const users = await User.find({});
+    expect(users.length).toBe(2);
+  });
+
+  test("add new user", async () => {
+    const newUser = {
+      name: "tom",
+      username: "mouse",
+      password: "passwerd"
+    };
+
+    await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const getUsers = await User.find({});
+    const usernames = getUsers.map(user => user.username);
+    expect(usernames.length).toBe(3);
+    expect(usernames).toContain("mouse");
   });
 });
 

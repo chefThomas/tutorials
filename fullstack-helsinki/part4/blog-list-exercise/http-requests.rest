@@ -2,22 +2,42 @@ GET http://localhost:3003/api/blogs
 
 ###
 POST http://localhost:3003/api/blogs HTTP/1.1
-Content-Type: application/json
+content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RVc2VyIiwidXNlcklkIjoiNWQ4OGU2MDg5MWI5ZmExODhmMWJhNzI2IiwiaWF0IjoxNTY5MjUyODg1fQ.R8cdlRcc6yGJJ8xuCv-pdd0djxAU1RJwe6BLDS3odrM
 
 {
-  "title": "hockey pucks and you",
-  "author": "chad mcmuffin",
+  "title": "delete tester",
+  "author": "backend expert",
   "url": "http://goodstuff.com",
   "likes": 900
 }
 ###
-DELETE http://localhost:3003/api/blogs/5d7be49cdf23890e0171d0e6
-
+DELETE http://localhost:3003/api/blogs/5d87bf226543e521d55827e2
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RVc2VyIiwidXNlcklkIjoiNWQ4OGU2MDg5MWI5ZmExODhmMWJhNzI2IiwiaWF0IjoxNTY5MjUyODg1fQ.R8cdlRcc6yGJJ8xuCv-pdd0djxAU1RJwe6BLDS3odrM
 
 ###
-PUT http://localhost:3003/api/blogs/5d769f07ebd27f26c79b868c
+PUT http://localhost:3003/api/blogs/5d769ef2ebd27f26c79b868b
 Content-Type:  application/json
 
 {
   "likes": 333
+}
+###
+POST http://localhost:3003/api/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "testUser",
+  "name": "will",
+  "password": "passw3rd"
+}
+###
+GET http://localhost:3003/api/users
+###
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "testUser",
+  "password": "passw3rd"
 }

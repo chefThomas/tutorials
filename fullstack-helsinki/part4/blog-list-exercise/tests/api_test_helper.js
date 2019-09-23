@@ -1,3 +1,5 @@
+const User = require("../models/user");
+
 const blogs = [
   {
     title: "capitol",
@@ -25,6 +27,21 @@ const blogs = [
   }
 ];
 
+const users = [
+  {
+    name: "tom",
+    username: "newdevrising",
+    password: "passwerd"
+  },
+  {
+    name: "sally",
+    username: "computer",
+    password: "passwerd"
+  }
+];
+
 module.exports = {
-  blogs
+  blogs,
+  users,
+  getRandomUserId
 };
