@@ -1,0 +1,3 @@
+const FormStyle = {};
+
+export { FormStyle };

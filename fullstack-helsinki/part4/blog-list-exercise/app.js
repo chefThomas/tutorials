@@ -24,4 +24,9 @@ app.use("/api/blogs", blogsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/login", loginRouter);
 
+//
+app.use(function(err, req, res, next) {
+  res.json({ message: err.message });
+});
+
 module.exports = app;

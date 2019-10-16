@@ -1,0 +1,3 @@
+const NoteForm = {};
+
+export { NoteForm };

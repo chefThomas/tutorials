@@ -2,7 +2,7 @@ const usersRouter = require("express").Router();
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 
-usersRouter.post("/", async (req, res) => {
+usersRouter.post("/", async (req, res, next) => {
   const { username, password, name } = req.body;
 
   if (!(username && password)) {
@@ -28,7 +28,7 @@ usersRouter.post("/", async (req, res) => {
     const savedUser = await newUser.save();
     return res.json(savedUser);
   } catch (exception) {
-    console.log(exception);
+    next(exception);
   }
 });
 
@@ -42,7 +42,7 @@ usersRouter.get("/", async (req, res) => {
     console.log(users);
     return res.json(users.map(user => user.toJSON()));
   } catch (exception) {
-    console.log(exception);
+    next(exception);
   }
 });
 
