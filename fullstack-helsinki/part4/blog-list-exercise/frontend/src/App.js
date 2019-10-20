@@ -40,16 +40,21 @@ function App() {
       return window.localStorage.getItem("userToken");
     };
 
+    const getCurrentUsernameFromLocalStorage = () => {
+      return window.localStorage.getItem("currentUsername");
+    };
+
     const retrieveBlogs = async () => {
       setToken(token);
       const { data } = await getBlogs(token);
-      console.log("get blogs response: ", data);
-      setBlogs(data);
+      console.log("get blogs response: ", data.blogs);
+      setBlogs(data.blogs);
     };
 
     const token = getTokenFromLocalStorage();
     if (token) {
       retrieveBlogs();
+      setCurrentUsername(getCurrentUsernameFromLocalStorage());
     }
   }, []);
 
@@ -63,7 +68,7 @@ function App() {
       handleMessage("must enter username and password");
     } else {
       const response = await login(username, password);
-      console.log("response data: ", response);
+      console.log("login response data: ", response);
       const { message, token, currentUsername } = response.data;
 
       if (message) {
@@ -72,9 +77,10 @@ function App() {
         setToken(token);
         setCurrentUsername(currentUsername);
         window.localStorage.setItem("userToken", token);
+        window.localStorage.setItem("currentUsername", currentUsername);
         const { data } = await getBlogs(token);
-        setBlogs(data);
-        // setCurrentUsername();
+        console.log("data.blogs in login: ", data.blogs);
+        setBlogs(data.blogs);
       }
     }
   };
@@ -129,23 +135,23 @@ function App() {
       setUrl("");
     }
   };
-  const deleteBlog = async id => {
-    const { data } = await removeBlog(token, id);
-    console.log("delete result: ", data);
-    // // remove deleted blog from state
-    // const updatedBlogs = blogs.filter(blog => {
-    //   return blog.id !== id;
-    // });
-    // setBlogs(updatedBlogs);
 
-    console.log("delete blog id: ", id);
+  const deleteBlog = id => {
+    if (window.confirm("are you sure?")) {
+      removeBlog(id);
+      // remove deleted blog from state
+      const updatedBlogs = blogs.filter(blog => {
+        return blog.id !== id;
+      });
+      setBlogs(updatedBlogs);
+    }
   };
+
   const generateBlogs = () => {
     // sort by decreasing number of likes
     const sortedBlogs = blogs.sort((a, b) => {
       return b.likes - a.likes;
     });
-    console.log("sorted blogs: ", sortedBlogs);
 
     return sortedBlogs.map(blog => {
       return (

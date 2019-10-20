@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 const STYLE = {
   show: {
@@ -57,6 +58,14 @@ const Blog = ({
       </div>
     </div>
   );
+};
+
+Blog.propTypes = {
+  id: PropTypes.string.isRequired,
+  voteUp: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
+  addedBy: PropTypes.string.isRequired,
+  currentUser: PropTypes.string.isRequired
 };
 
 export { Blog };

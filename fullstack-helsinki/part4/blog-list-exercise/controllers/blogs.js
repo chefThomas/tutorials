@@ -4,22 +4,27 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 blogsRouter.get("/", async (req, res) => {
-  try {
-    const blogs = await Blog.find({}).populate("user", {
-      username: 1,
-      name: 1
-    });
-    res.json(blogs.map(blog => blog.toJSON()));
-  } catch (exception) {
-    console.log(exception);
-  }
+  const token = req.token;
+  if (token) {
+    let tokenPayload = jwt.verify(req.token, process.env.SECRET);
+    try {
+      const blogs = await Blog.find({}).populate("user", {
+        username: 1,
+        name: 1
+      });
+      const blogArr = blogs.map(blog => blog.toJSON());
+      res.json({ blogs: blogArr, tokenPayload });
+    } catch (exception) {
+      console.log(exception);
+    }
+  } else res.status(401).json({ message: "unauthorized" });
 });
 
 blogsRouter.delete("/:id", async (req, res) => {
-  // get token from req header
   console.log("req params id", req.params.id);
-  const { result } = Blog.findByIdAndRemove(req.params.id);
-  res.send(result);
+  const result = await Blog.findByIdAndRemove(req.params.id);
+  console.log("delete this: ", result);
+  res.json(result);
 });
 
 blogsRouter.post("/", async (req, res) => {
@@ -67,13 +72,11 @@ blogsRouter.put("/:id", async (req, res) => {
   }
 });
 
-// blogsRouter.delete("/:id", async (req, res) => {
-//   try {
-//     const deletedNote = await Blog.findByIdAndRemove(req.params.id);
-//     return deletedNote ? res.json(deletedNote.toJSON()) : res.status(404).end();
-//   } catch (exception) {
-//     res.send(exception);
-//   }
-// });
+blogsRouter.delete("/:id", async (req, res) => {
+  const deletedNote = await Blog.findByIdAndRemove(req.params.id);
+  console.log("deletedNote: ", deletedNote);
+  console.log(req.params.id);
+  res.json(deletedNote.toJSON());
+});
 
 module.exports = blogsRouter;

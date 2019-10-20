@@ -27,15 +27,10 @@ const postBlog = async (tokenStr, newBlog) => {
   return result;
 };
 
-const removeBlog = async (tokenStr, blogId) => {
-  const token = `bearer ${tokenStr}`;
-  console.log("post blog api helper token: ", tokenStr);
-  const config = {
-    headers: { Authorization: token }
-  };
-  const result = await axios.delete(`${baseUrl}/blogs/${blogId}`, config);
+const removeBlog = async blogId => {
+  const result = await axios.delete(`${baseUrl}/blogs/${blogId}`);
 
-  console.log("post result", result);
+  console.log("remove result", result);
   return result;
 };
 
